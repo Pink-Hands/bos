@@ -1,0 +1,97 @@
+package pers.test.bos.web.action;
+
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import pers.test.bos.domain.BcStaff;
+import pers.test.bos.service.IStaffService;
+import pers.test.bos.web.action.base.BaseAction;
+
+/**
+ * 取派员管理
+ */
+@Controller
+@Scope("prototype")
+public class StaffAction extends BaseAction<BcStaff> {
+
+	@Autowired
+	private IStaffService staffService;
+
+	/**
+	 * 添加取派员
+	 */
+	public String add() {
+		staffService.save(model);
+		return LIST;
+	}
+
+	/**
+	 * 分页查询
+	 */
+	@RequiresPermissions("staff-list")
+	public String pageQuery() throws IOException {
+
+		staffService.pageQuery(pageBean);
+		String[] excludes = new String[] { "currentPage", "detachedCriteria", "pageSize", "bcDecidedzones" };
+		this.java2Json(pageBean, excludes);
+		return NONE;
+	}
+
+	private String ids;
+
+	/**
+	 * 取派员批量删除
+	 */
+	@RequiresPermissions("staff-delete")
+	public String deleteBatch() {
+		staffService.deleteBatch(ids);
+		return LIST;
+	}
+
+	/**
+	 * 取派员批量恢复
+	 */
+	public String restoreBatch() {
+		staffService.restoreBatch(ids);
+		return LIST;
+	}
+
+	/**
+	 * 取派员信息修改
+	 */
+	public String edit() {
+		// 查询原数据,传递来的数据会放在baseAction的model中
+		BcStaff staff = staffService.findById(model.getId());
+		// 数据覆盖
+		staff.setName(model.getName());
+		staff.setTelephone(model.getTelephone());
+		staff.setHaspda(model.getHaspda());
+		staff.setStandard(model.getStandard());
+		staff.setStation(model.getStation());
+		// 更新数据
+		staffService.update(staff);
+		return LIST;
+	}
+
+	/**
+	 * 查询所有未删除的取派员
+	 */
+	public String listajax() {
+		List<BcStaff> list = staffService.findListNotDelete();
+		this.java2Json(list, new String[] { "bcDecidedzones" });
+		return NONE;
+	}
+
+	public String getIds() {
+		return ids;
+	}
+
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+}

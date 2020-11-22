@@ -1,0 +1,64 @@
+package pers.test.bos.service.impl;
+
+import java.util.List;
+
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import pers.test.bos.dao.ISubareaDao;
+import pers.test.bos.domain.BcSubarea;
+import pers.test.bos.service.ISubareaService;
+import pers.test.bos.utils.PageBean;
+
+@Service
+@Transactional
+public class SubareaServiceImple implements ISubareaService {
+
+	@Autowired
+	private ISubareaDao subareaDao;
+
+	/**
+	 * 保存数据
+	 */
+	public void save(BcSubarea model) {
+		subareaDao.save(model);
+	}
+
+	/**
+	 * 分页查询
+	 */
+	public void pageQuery(PageBean pageBean) {
+		subareaDao.pageQuery(pageBean);
+	}
+
+	public List<BcSubarea> findAll() {
+		return subareaDao.findAll();
+	}
+
+	/**
+	 * 查询未关联定区的 分区数据
+	 */
+	public List<BcSubarea> findListNotAssociation() {
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(BcSubarea.class);
+		detachedCriteria.add(Restrictions.isNull("bcDecidedzone"));// 寻找bcDecidedzone = null的数据
+		return subareaDao.findByCriteria(detachedCriteria);
+	}
+
+	/**
+	 * 根据定区id查询所关联的分区
+	 */
+	public List<BcSubarea> findListByDecidedzoneId(String decidedzoneId) {
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(BcSubarea.class);
+		//添加过滤条件
+		detachedCriteria.add(Restrictions.eq("bcDecidedzone.id",decidedzoneId));
+		return subareaDao.findByCriteria(detachedCriteria);
+	}
+
+	public List<Object> findSubareaGroupByProvince() {
+		return subareaDao.findSubareaGroupByProvince();
+	}
+
+}

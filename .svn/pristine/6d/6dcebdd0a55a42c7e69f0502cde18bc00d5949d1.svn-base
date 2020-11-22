@@ -1,0 +1,28 @@
+package pers.test.bos.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import pers.test.bos.dao.IRegionDao;
+import pers.test.bos.domain.BcRegion;
+import pers.test.bos.service.IRegionService;
+
+@Service
+@Transactional
+public class RegionServiceImpl implements IRegionService {
+
+	@Autowired
+	private IRegionDao regionDao;
+	
+	/**
+	 * 批量保存区域数据
+	 */
+	public void saveBatch(List<BcRegion> regionList) {
+		for (BcRegion region : regionList) {
+			regionDao.saveOrUpdate(region);
+		}
+	}
+}

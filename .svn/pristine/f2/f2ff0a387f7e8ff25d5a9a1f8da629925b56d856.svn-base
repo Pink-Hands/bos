@@ -1,0 +1,81 @@
+package pers.test.bos.web.action;
+
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+
+import org.apache.commons.lang3.StringUtils;
+import pers.test.bos.domain.User;
+import pers.test.bos.service.IUserService;
+import pers.test.bos.utils.BOSUtils;
+import pers.test.bos.web.action.base.BaseAction;
+
+@Controller // 控制器
+@Scope("prototype") // 多例
+public class UserAction extends BaseAction<User> {
+
+	private String checkcode;// 接收验证码
+
+	public void setCheckcode(String checkcode) {
+		this.checkcode = checkcode;
+	}
+
+	@Autowired
+	private IUserService userService;
+
+	/*
+	 * 处理登录界面
+	 */
+	public String login() {
+		// 取出验证码
+		String validdatecode = (String) ServletActionContext.getRequest().getSession().getAttribute("key");
+
+		if (StringUtils.isNotBlank(checkcode) && checkcode.equals(validdatecode)) {
+			// 验证码正确
+			User user = userService.login(model);
+			if (user != null) {
+				// 登录成功
+				ServletActionContext.getRequest().getSession().setAttribute("loginUser", user);
+				return HOME;
+			} else {
+				// 登录失败,提示后跳转回登录页面
+				this.addActionError("用户名或密码错误!");
+				return LOGIN;
+			}
+		} else {
+			// 验证码错误,提示后跳转回登录页面
+			this.addActionError("输入的验证码错误!");
+			return LOGIN;
+		}
+	}
+
+	/*
+	 * 注销
+	 */
+	public String logout() {
+		ServletActionContext.getRequest().getSession().invalidate();
+		return LOGIN;
+	}
+	
+	/*
+	 * 修改密码
+	 */
+	public String editPassword() throws IOException {
+		String f = "1";
+		//获取当前用户
+		User user = BOSUtils.getLoginUser();
+		try {
+			userService.editPassword(user.getId(),model.getPassword());
+		} catch (Exception e) {
+			f = "0";
+			e.printStackTrace();
+		}
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");//告知返回的f是字符串而不是对象
+		ServletActionContext.getResponse().getWriter().printf(f);
+		return NONE;
+	}
+}

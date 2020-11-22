@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../config/ehcache.xsd" updateCheck="false">     
+<!-- 操作系统临时目录 -->
+<diskStore path="java.io.tmpdir"/>
+<!-- 
+maxElementsInMemory="内存最大元素数"
+eternal="是否永久有效"
+timeToIdleSeconds="缓冲数据自动清理间隔时间"
+timeToLiveSeconds="生命周期,存活时间"
+overflowToDisk="是否允许逸出到磁盘"
+maxElementsOnDisk="磁盘最大逸出"
+diskPersistent="磁盘上的数据是否还要"
+diskExpiryThreadIntervalSeconds="线程清理间隔时间"
+memoryStoreEvictionPolicy="淘汰策略,LRU为最近最少使用,FIFO先进先出"
+ -->
+<defaultCache
+        maxElementsInMemory="10000"
+        eternal="false"
+        timeToIdleSeconds="120"
+        timeToLiveSeconds="120"
+        overflowToDisk="true"
+        maxElementsOnDisk="10000000"
+        diskPersistent="false"
+        diskExpiryThreadIntervalSeconds="120"
+        memoryStoreEvictionPolicy="LRU"
+        />
+</ehcache>

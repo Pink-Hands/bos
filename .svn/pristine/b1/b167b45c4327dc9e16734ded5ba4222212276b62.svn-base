@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping auto-import="true" default-access="property"
+	default-cascade="none" default-lazy="true">
+	<class dynamic-insert="false" dynamic-update="false"
+		mutable="true" name="pers.test.bos.domain.User" optimistic-lock="version"
+		polymorphism="implicit" select-before-update="false" table="t_user">
+		<id name="id" type="string">
+			<column length="32" name="id" />
+			<generator class="assigned" />
+		</id>
+		<property generated="never" lazy="false" name="username"
+			optimistic-lock="true" type="string" unique="false">
+			<column length="20" name="username" not-null="true" />
+		</property>
+		<property generated="never" lazy="false" name="password"
+			optimistic-lock="true" type="string" unique="false">
+			<column length="32" name="password" not-null="true" />
+		</property>
+		<property generated="never" lazy="false" name="salary"
+			optimistic-lock="true" type="java.lang.Double" unique="false">
+			<column name="salary" precision="22" scale="0" />
+		</property>
+		<property generated="never" lazy="false" name="birthday"
+			optimistic-lock="true" type="date" unique="false">
+			<column length="0" name="birthday" />
+		</property>
+		<property generated="never" lazy="false" name="gender"
+			optimistic-lock="true" type="string" unique="false">
+			<column length="10" name="gender" />
+		</property>
+		<property generated="never" lazy="false" name="station"
+			optimistic-lock="true" type="string" unique="false">
+			<column length="40" name="station" />
+		</property>
+		<property generated="never" lazy="false" name="telephone"
+			optimistic-lock="true" type="string" unique="false">
+			<column length="11" name="telephone" />
+		</property>
+		<property generated="never" lazy="false" name="remark"
+			optimistic-lock="true" type="string" unique="false">
+			<column name="remark" />
+		</property>
+	</class>
+</hibernate-mapping>

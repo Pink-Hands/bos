@@ -1,0 +1,11 @@
+package pers.test.bos.service;
+
+import pers.test.bos.domain.TUser;
+
+public interface IUserService {
+
+	TUser login(TUser model);
+
+	void editPassword(String id, String password);
+
+}

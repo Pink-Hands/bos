@@ -1,0 +1,13 @@
+eclipse.preferences.version=1
+encoding//src/main/webapp/easyui/layout.jsp=UTF-8
+encoding//src/main/webapp/json=UTF-8
+encoding//src/main/webapp/json/admin.json=UTF-8
+encoding//src/main/webapp/json/association_customer.json=UTF-8
+encoding//src/main/webapp/json/association_subarea.json=UTF-8
+encoding//src/main/webapp/json/decidedzone.json=UTF-8
+encoding//src/main/webapp/json/decidedzone_subarea.json=UTF-8
+encoding//src/main/webapp/json/menu.json=UTF-8
+encoding//src/main/webapp/json/region.json=UTF-8
+encoding//src/main/webapp/json/staff.json=UTF-8
+encoding//src/main/webapp/json/subarea.json=UTF-8
+encoding//src/main/webapp/json/users.json=UTF-8

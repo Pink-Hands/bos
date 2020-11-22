@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generated 2020-11-14 15:24:32 by Hibernate Tools 5.3.0.Beta2 --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping auto-import="true" default-access="property" default-cascade="none" default-lazy="true">
+    <class catalog="bos32" dynamic-insert="false" dynamic-update="false" mutable="true" name="pers.test.bos.domain.TUser" optimistic-lock="version" polymorphism="implicit" select-before-update="false" table="t_user">
+        <id name="id" type="string">
+            <column length="32" name="id"/>
+            <generator class="uuid"/>
+        </id>
+        <property generated="never" lazy="false" name="username" optimistic-lock="true" type="string" unique="false">
+            <column length="20" name="username"/>
+        </property>
+        <property generated="never" lazy="false" name="password" optimistic-lock="true" type="string" unique="false">
+            <column length="32" name="password"/>
+        </property>
+        <property generated="never" lazy="false" name="salary" optimistic-lock="true" type="java.lang.Double" unique="false">
+            <column name="salary" precision="22" scale="0"/>
+        </property>
+        <property generated="never" lazy="false" name="birthday" optimistic-lock="true" type="date" unique="false">
+            <column length="0" name="birthday"/>
+        </property>
+        <property generated="never" lazy="false" name="gender" optimistic-lock="true" type="string" unique="false">
+            <column length="10" name="gender"/>
+        </property>
+        <property generated="never" lazy="false" name="station" optimistic-lock="true" type="string" unique="false">
+            <column length="40" name="station"/>
+        </property>
+        <property generated="never" lazy="false" name="telephone" optimistic-lock="true" type="string" unique="false">
+            <column length="11" name="telephone"/>
+        </property>
+        <property generated="never" lazy="false" name="remark" optimistic-lock="true" type="string" unique="false">
+            <column name="remark"/>
+        </property>
+        <set embed-xml="true" fetch="select" inverse="true" lazy="true" mutable="true" name="qpNoticebills" optimistic-lock="true" sort="unsorted" table="qp_noticebill">
+            <key on-delete="noaction">
+                <column length="32" name="user_id"/>
+            </key>
+            <one-to-many class="pers.test.bos.domain.QpNoticebill" embed-xml="true" not-found="exception"/>
+        </set>
+        <set embed-xml="true" fetch="select" inverse="false" lazy="true" mutable="true" name="authRoles" optimistic-lock="true" sort="unsorted" table="user_role">
+            <key on-delete="noaction">
+                <column length="32" name="user_id" not-null="true"/>
+            </key>
+            <many-to-many embed-xml="true" entity-name="pers.test.bos.domain.AuthRole" not-found="exception" unique="false">
+                <column length="32" name="role_id" not-null="true"/>
+            </many-to-many>
+        </set>
+    </class>
+    <query name="user.editpassword">
+    	UPDATE TUser SET password = ? WHERE id = ?
+    </query>
+</hibernate-mapping>

@@ -1,0 +1,11 @@
+package pers.test.bos.service;
+
+import java.util.List;
+
+import pers.test.bos.domain.BcRegion;
+
+public interface IRegionService {
+
+	public void saveBatch(List<BcRegion> regionList);
+
+}

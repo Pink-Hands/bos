@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generated 2020-11-14 14:49:18 by Hibernate Tools 5.3.0.Beta2 --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping auto-import="true" default-access="property" default-cascade="none" default-lazy="true">
+	<class dynamic-insert="false" dynamic-update="false" mutable="true" name="pers.test.bos.domain.AuthFunction"
+		optimistic-lock="version" polymorphism="implicit" select-before-update="false" table="auth_function">
+		<id name="id" type="string">
+			<column length="32" name="id" />
+			<generator class="assigned" />
+		</id>
+		<many-to-one class="pers.test.bos.domain.AuthFunction" embed-xml="true" fetch="select" insert="true"
+			name="parentFunction" not-found="exception" optimistic-lock="true" unique="false" update="true">
+			<column length="32" name="pid" />
+		</many-to-one>
+		<property generated="never" lazy="false" name="name" optimistic-lock="true" type="string" unique="false">
+			<column name="name" />
+		</property>
+		<property generated="never" lazy="false" name="code" optimistic-lock="true" type="string" unique="false">
+			<column name="code" />
+		</property>
+		<property generated="never" lazy="false" name="description" optimistic-lock="true" type="string" unique="false">
+			<column name="description" />
+		</property>
+		<property generated="never" lazy="false" name="page" optimistic-lock="true" type="string" unique="false">
+			<column name="page" />
+		</property>
+		<property generated="never" lazy="false" name="generatemenu" optimistic-lock="true" type="string" unique="false">
+			<column name="generatemenu" />
+		</property>
+		<property generated="never" lazy="false" name="zindex" optimistic-lock="true" type="java.lang.Integer"
+			unique="false">
+			<column name="zindex" />
+		</property>
+		<set embed-xml="true" fetch="select" inverse="true" lazy="true" mutable="true" name="authFunctions"
+			optimistic-lock="true" sort="unsorted" table="auth_function">
+			<key on-delete="noaction">
+				<column length="32" name="pid" />
+			</key>
+			<one-to-many class="pers.test.bos.domain.AuthFunction" embed-xml="true" not-found="exception" />
+		</set>
+		<set embed-xml="true" fetch="select" inverse="false" lazy="true" mutable="true" name="children" optimistic-lock="true"
+			sort="unsorted" table="role_function">
+			<key on-delete="noaction">
+				<column length="32" name="function_id" not-null="true" />
+			</key>
+			<many-to-many embed-xml="true" entity-name="pers.test.bos.domain.AuthRole" not-found="exception" unique="false">
+				<column length="32" name="role_id" not-null="true" />
+			</many-to-many>
+		</set>
+	</class>
+</hibernate-mapping>

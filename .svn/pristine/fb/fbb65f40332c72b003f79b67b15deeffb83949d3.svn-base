@@ -1,0 +1,68 @@
+package pers.test.bos.service.impl;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import pers.test.bos.dao.IStaffDao;
+import pers.test.bos.domain.BcStaff;
+import pers.test.bos.service.IStaffService;
+import pers.test.bos.utils.PageBean;
+
+@Service
+@Transactional
+public class StaffServiceImpl implements IStaffService {
+
+	@Autowired
+	private IStaffDao staffDao;
+
+	@Override
+	public void save(BcStaff model) {
+		staffDao.save(model);
+	}
+
+	@Override
+	public void pageQuery(PageBean pageBean) {
+		staffDao.pageQuery(pageBean);
+	}
+
+	/**
+	 * 取派员批量删除,将deltag改为1
+	 */
+	public void deleteBatch(String ids) {
+		if (StringUtils.isNotBlank(ids)) {
+			String[] staffIds = ids.split(",");//分割回数组
+			for(String id:staffIds) {
+				staffDao.executeUpadte("staff.delete", '1', id);
+			}
+		}
+	}
+
+	/**
+	 * 取派员批量恢复
+	 */
+	public void restoreBatch(String ids) {
+		if (StringUtils.isNotBlank(ids)) {
+			String[] staffIds = ids.split(",");//分割回数组
+			for(String id:staffIds) {
+				staffDao.executeUpadte("staff.delete", '0', id);
+			}
+		}
+	}
+
+	/**
+	 * 根据id查询数据
+	 */
+	public BcStaff findById(String id) {
+		return staffDao.findById(id);
+	}
+
+	/**
+	 * 修改数据
+	 */
+	public void update(BcStaff staff) {
+		staffDao.update(staff);
+	}
+
+}

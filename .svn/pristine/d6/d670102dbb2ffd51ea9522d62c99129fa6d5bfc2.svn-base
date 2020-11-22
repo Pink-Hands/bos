@@ -1,0 +1,31 @@
+package pers.test.bos.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import pers.test.bos.dao.IUserDao;
+import pers.test.bos.domain.User;
+import pers.test.bos.service.IUserService;
+import pers.test.bos.utils.MD5Utils;
+
+@Service // 服务
+@Transactional // 事务
+public class UserServiceImpl implements IUserService {
+	@Autowired
+	private IUserDao userDao;// 引入基本方法
+
+	public User login(User user) {
+		//用MD5进行加密
+		String password = MD5Utils.md5(user.getPassword());
+		
+		return userDao.findUserByUsernameAndPassword(user.getUsername(),password);
+	}
+	
+	//修改密码
+	@Override
+	public void editPassword(String id, String password) {
+		password = MD5Utils.md5(password);
+		userDao.executeUpadte("user.editpassword", password ,id);
+	}
+}

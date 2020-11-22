@@ -1,0 +1,119 @@
+package pers.test.bos.web.action;
+
+import java.io.IOException;
+
+import org.apache.struts2.ServletActionContext;
+import org.hibernate.criterion.DetachedCriteria;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import net.sf.json.JSON;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+import pers.test.bos.domain.BcStaff;
+import pers.test.bos.service.IStaffService;
+import pers.test.bos.utils.PageBean;
+import pers.test.bos.web.action.base.BaseAction;
+
+/**
+ * 取派员管理
+ */
+@Controller
+@Scope("prototype")
+public class StaffAction extends BaseAction<BcStaff> {
+
+	@Autowired
+	private IStaffService staffService;
+
+	/**
+	 * 添加取派员
+	 */
+	public String add() {
+		staffService.save(model);
+		return LIST;
+	}
+	
+	private int page;//存放传递来的page和rows
+	private int rows;
+	/**
+	 * 分页查询
+	 * @throws IOException 
+	 */
+	public String pageQuery() throws IOException {
+		PageBean pageBean = new PageBean();
+		pageBean.setCurrentPage(page);
+		pageBean.setPageSize(rows);
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(BcStaff.class);//构建查询对象
+		pageBean.setDetachedCriteria(detachedCriteria);
+		staffService.pageQuery(pageBean);
+		
+		/*
+		 * 使用json-lib将pageBean输出为json
+		 * JSONObject转化单一对象,即使pageBean内很多对象,但pageBean不是数组
+		 * JSONArray转化数组
+		 */
+		JsonConfig jsonConfig = new JsonConfig();
+		//排除不需要转化的json
+		jsonConfig.setExcludes(new String[] {"currentPage","detachedCriteria","pageSize"});
+		String json = JSONObject.fromObject(pageBean,jsonConfig).toString();//转化为json字符串
+		ServletActionContext.getResponse().setContentType("text/json;charset=utf-8");//设置输出为json
+		ServletActionContext.getResponse().getWriter().print(json);//将从数据库查询到的数据输回
+		
+		return NONE;
+	}
+	
+	private String ids;
+	/**
+	 * 取派员批量删除
+	 */
+	public String deleteBatch() {
+		staffService.deleteBatch(ids);
+		return LIST;
+	}
+	
+	/**
+	 * 取派员批量恢复
+	 */
+	public String restoreBatch() {
+		staffService.restoreBatch(ids);
+		return LIST;
+	}
+	
+	/**
+	 * 取派员信息修改
+	 */
+	public String edit() {
+		//查询原数据,传递来的数据会放在baseAction的model中
+		BcStaff staff = staffService.findById(model.getId());
+		//数据覆盖
+		staff.setName(model.getName());
+		staff.setTelephone(model.getTelephone());
+		staff.setHaspda(model.getHaspda());
+		staff.setStandard(model.getStandard());
+		staff.setStation(model.getStation());
+		//更新数据
+		staffService.update(staff);
+		return LIST;
+	}
+	public int getPage() {
+		return page;
+	}
+	public void setPage(int page) {
+		this.page = page;
+	}
+	public int getRows() {
+		return rows;
+	}
+	public void setRows(int rows) {
+		this.rows = rows;
+	}
+
+	public String getIds() {
+		return ids;
+	}
+
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+}

@@ -1,0 +1,12 @@
+package pers.test.bos.dao.base.impl;
+
+import org.springframework.stereotype.Repository;
+
+import pers.test.bos.dao.IRegionDao;
+import pers.test.bos.domain.BcRegion;
+
+@Repository
+public class RegionDaoImpl extends BaseDaoImpl<BcRegion> implements IRegionDao {
+
+
+}

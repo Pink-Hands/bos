@@ -1,0 +1,12 @@
+package pers.test.bos.dao;
+
+import pers.test.bos.dao.base.IBaseDao;
+import pers.test.bos.domain.TUser;
+
+public interface IUserDao extends IBaseDao<TUser> {
+
+	public TUser findUserByUsernameAndPassword(String username, String password);
+
+	public TUser findUserByUsername(String username);
+
+}

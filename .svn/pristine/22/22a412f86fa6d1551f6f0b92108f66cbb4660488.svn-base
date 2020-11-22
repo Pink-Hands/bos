@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<constant name="struts.devMode" value="false" />
+	<!-- 已经有过配置 <constant name="struts.objectFactory" value="spring"/> -->
+	<package name="basicstruts2" extends="struts-default">
+		<interceptors>
+			<!-- 自定义拦截器 -->
+			<interceptor name="bosLoginInterceptor" class="pers.test.bos.web.interceptor.BOSLoginINterceptor">
+				<!-- 指定不需拦截的部分,放行UserAction中的方法login -->
+				<param name="excludeMethods">login</param>
+			</interceptor>
+
+			<!-- 定义拦截器栈,将自定义的和默认的放在一起,然后设置这个为默认的拦截器 -->
+			<interceptor-stack name="myStack">
+				<interceptor-ref name="bosLoginInterceptor"></interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="myStack" />
+		<!-- 定义全局结果集 -->
+		<global-results>
+			<result name="login">/login.jsp</result>
+		</global-results>
+		<!-- 页面映射 需要进行权限控制的页面访问 -->
+		<action name="page_*_*">
+			<result type="dispatcher">/WEB-INF/pages/{1}/{2}.jsp</result>
+		</action>
+		<!-- 管理用户登录,class为类名首字母小写 -->
+		<!-- 访问userAction_*路径时,则会跳转到 UserAction类 使用 方法* ,类中若返回login则跳转login.jsp -->
+		<action name="userAction_*" class="userAction" method="{1}">
+			<result name="home">/index.jsp</result>
+		</action>
+		<!-- 取派员管理 -->
+		<action name="staffAction_*" class="staffAction" method="{1}">
+			<result name="list">/WEB-INF/pages/base/staff.jsp</result>
+		</action>
+		<!-- 区域管理 -->
+		<action name="regionAction_*" class="regionAction" method="{1}">
+			<result name="list">/WEB-INF/pages/base/region.jsp</result>
+		</action>
+		<!-- 分区管理 -->
+		<action name="subareaAction_*" class="subareaAction" method="{1}">
+			<result name="list">/WEB-INF/pages/base/subarea.jsp</result>
+		</action>
+		<!-- 定区管理 -->
+		<action name="decidedzoneAction_*" class="decidedzoneAction" method="{1}">
+			<result name="list">/WEB-INF/pages/base/decidedzone.jsp</result>
+		</action>
+		<!-- 业务通知单管理 -->
+		<action name="noticebillAction_*" class="noticebillAction" method="{1}">
+			<result name="noticebill_add">/WEB-INF/pages/qupai/noticebill_add.jsp</result>
+		</action>
+		<!-- 工作单管理 -->
+		<action name="workordermanageAction_*" class="workordermanageAction" method="{1}">
+		</action>
+	</package>
+</struts>

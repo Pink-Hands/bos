@@ -1,0 +1,143 @@
+package pers.test.bos.web.action;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.ServletOutputStream;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import pers.test.bos.domain.BcRegion;
+import pers.test.bos.domain.BcSubarea;
+import pers.test.bos.service.ISubareaService;
+import pers.test.bos.utils.FileUtils;
+import pers.test.bos.web.action.base.BaseAction;
+
+@Controller
+@Scope("prototype")
+public class SubareaAction extends BaseAction<BcSubarea> {
+
+	@Autowired
+	private ISubareaService subareaService;
+
+	/**
+	 * 添加分区
+	 */
+	public String add() {
+		subareaService.save(model);
+		return LIST;
+	}
+
+	/**
+	 * 分区分页查询
+	 */
+	public String pageQuery() {
+		DetachedCriteria dc = pageBean.getDetachedCriteria();
+		String addresskey = model.getAddresskey();
+		if (StringUtils.isNotBlank(addresskey)) {
+			dc.add(Restrictions.like("addresskey", "%" + addresskey + "%"));// 模糊查询,前者数据库字段,后者表示 前后可有别值
+		}
+		BcRegion region = model.getBcRegion();
+		if (region != null) {
+			String province = region.getProvince();
+			String city = region.getCity();
+			String district = region.getDistrict();
+
+			dc.createAlias("bcRegion", "r");// 前者关联BcSuarea中的属性bcRegion,后者给表bc_subarea起别名
+
+			if (StringUtils.isNotBlank(province)) {
+				dc.add(Restrictions.like("r.province", "%" + province + "%"));// r.province即bcRegion.province
+			}
+			if (StringUtils.isNotBlank(city)) {
+				dc.add(Restrictions.like("r.city", "%" + city + "%"));
+			}
+			if (StringUtils.isNotBlank(district)) {
+				dc.add(Restrictions.like("r.district", "%" + district + "%"));
+			}
+		}
+		subareaService.pageQuery(pageBean);
+		this.java2Json(pageBean,
+				new String[] { "currentPage", "detachedCriteria", "pageSize", "bcDecidedzone", "bcSubareas" });
+		return NONE;
+	}
+
+	/**
+	 * 分区数据导出功能
+	 */
+	public String exportXls() throws IOException {
+		/* 查询所有数据 */
+		List<BcSubarea> list = subareaService.findAll();
+		/* 输出到excel */
+		HSSFWorkbook workbook = new HSSFWorkbook();// excel
+		HSSFSheet sheet = workbook.createSheet("分区数据");// sheet
+		HSSFRow headRow = sheet.createRow(0);// 标题行
+		headRow.createCell(0).setCellValue("分拣编号");
+		headRow.createCell(1).setCellValue("起始号");
+		headRow.createCell(2).setCellValue("终止号");
+		headRow.createCell(3).setCellValue("位置");
+		headRow.createCell(4).setCellValue("省市区");
+		// 遍历写入数据
+		for (BcSubarea subarea : list) {
+			HSSFRow dataRow = sheet.createRow(sheet.getLastRowNum() + 1);// 创建新的行
+			dataRow.createCell(0).setCellValue(subarea.getId());
+			dataRow.createCell(1).setCellValue(subarea.getStartnum());
+			dataRow.createCell(2).setCellValue(subarea.getEndnum());
+			dataRow.createCell(3).setCellValue(subarea.getPosition());
+			dataRow.createCell(4).setCellValue(subarea.getBcRegion().getName());
+		}
+		/* 输出文件 */
+		String filename = "分区数据.xls";// 设置文件名
+		String contentType = ServletActionContext.getServletContext().getMimeType(filename);// 根据文件名动态获取输出格式
+		ServletOutputStream out = ServletActionContext.getResponse().getOutputStream();// 设置输出流
+		ServletActionContext.getResponse().setContentType(contentType);
+		String agent = ServletActionContext.getRequest().getHeader("User-Agent");// 获取浏览器类型
+		filename = FileUtils.encodeDownloadFilename(filename, agent);// 根据浏览器对文件名进行编码
+		ServletActionContext.getResponse().setHeader("content-disposition", "attachment;filename=" + filename);
+		workbook.write(out);
+		return NONE;
+	}
+
+	/**
+	 * 查询未关联定区的 分区数据
+	 */
+	public String listajax() {
+		List<BcSubarea> list = subareaService.findListNotAssociation();
+		this.java2Json(list, new String[] { "bcDecidedzone", "bcRegion" });
+		return NONE;
+	}
+
+	// 属性驱动获取定区id
+	private String decidedzoneId;
+
+	public void setDecidedzoneId(String decidedzoneId) {
+		this.decidedzoneId = decidedzoneId;
+	}
+
+	/**
+	 * 根据定区id查询所关联的分区
+	 */
+	public String findListByDecidedzoneId() {
+		List<BcSubarea> list = subareaService.findListByDecidedzoneId(decidedzoneId);
+		this.java2Json(list, new String[] {"bcDecidedzone","bcSubareas"});
+		return NONE;
+	}
+
+	/**
+	 * 查询区域分区分布图数据
+	 */
+	public String findSubareaGroupByProvince() {
+		List<Object> list = subareaService.findSubareaGroupByProvince();
+		this.java2Json(list, new String[]{});
+		return NONE;
+	}
+	
+}
