@@ -8,4 +8,5 @@ import pers.test.bos.domain.QpWorkbill;
 @Repository
 public class WorkbillDaoImpl extends BaseDaoImpl<QpWorkbill> implements IWorkbillDao {
 
+
 }

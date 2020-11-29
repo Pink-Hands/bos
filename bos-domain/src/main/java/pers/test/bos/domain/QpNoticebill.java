@@ -1,6 +1,6 @@
 package pers.test.bos.domain;
-// Generated 2020-11-8 16:07:48 by Hibernate Tools 5.3.0.Beta2
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,7 +10,7 @@ import java.util.Set;
  */
 public class QpNoticebill implements java.io.Serializable {
 
-	private String id;
+	private String id;//通知单号
 	private BcStaff bcStaff;
 	private TUser TUser;
 	private String customerId;
@@ -37,6 +37,15 @@ public class QpNoticebill implements java.io.Serializable {
 		this.id = id;
 	}
 
+	public String getPickdateString() {
+		if(pickdate != null) {
+			String format = new SimpleDateFormat("yyyy-MM-dd").format(pickdate);
+			return format;
+		}else {
+			return "";
+		}
+	}
+	
 	public QpNoticebill(String id, BcStaff bcStaff, TUser TUser, String customerId, String customerName,
 			String delegater, String telephone, String pickaddress, String arrivecity, String product, Date pickdate,
 			Integer num, Double weight, String volume, String remark, String ordertype, Set qpWorkbills) {

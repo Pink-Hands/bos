@@ -11,6 +11,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -40,6 +43,7 @@ public class RegionAction extends BaseAction<BcRegion> {
 	/**
 	 * 区域文件导入
 	 */
+	@RequiresPermissions("region-import")
 	public String importXls() throws FileNotFoundException, IOException {
 
 		List<BcRegion> regionList = new ArrayList<BcRegion>();
@@ -75,7 +79,36 @@ public class RegionAction extends BaseAction<BcRegion> {
 	/**
 	 * 区域分页查询
 	 */
+	@RequiresPermissions("region")
 	public String pageQuery() throws IOException {
+		DetachedCriteria dc = pageBean.getDetachedCriteria();//获取分页查询中的查询条件
+		String province = model.getProvince();//获取传递来的查询参数
+		String city = model.getCity();
+		String district = model.getDistrict();
+		String postcode = model.getPostcode();
+		String shortcode = model.getShortcode();
+		String citycode = model.getCitycode();
+		
+
+		if (StringUtils.isNotBlank(province)) {
+			dc.add(Restrictions.like("province", "%" + province + "%"));//如果参数存在则进行模糊查询
+		}
+		if (StringUtils.isNotBlank(city)) {
+			dc.add(Restrictions.like("city", "%" + city + "%"));
+		}
+		if (StringUtils.isNotBlank(district)) {
+			dc.add(Restrictions.like("district", "%" + district + "%"));
+		}
+		if (StringUtils.isNotBlank(postcode)) {
+			dc.add(Restrictions.like("postcode", "%" + postcode + "%"));
+		}
+		if (StringUtils.isNotBlank(shortcode)) {
+			dc.add(Restrictions.like("shortcode", "%" + shortcode + "%"));
+		}
+		if (StringUtils.isNotBlank(citycode)) {
+			dc.add(Restrictions.like("citycode", "%" + citycode + "%"));
+		}
+		
 		
 		regionService.pageQuery(pageBean);
 		String[] excludes = new String[]{"currentPage","detachedCriteria","pageSize","bcSubareas"};
@@ -101,4 +134,37 @@ public class RegionAction extends BaseAction<BcRegion> {
 		this.java2Json(list, new String[] {"bcSubareas"});
 		return NONE;
 	}
+	
+	/**
+	 * 增加单条区域数据
+	 */
+	@RequiresPermissions("region-add")
+	public String add() {
+		regionService.save(model);
+		return LIST;
+	}
+	
+	private String ids;
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+
+	/**
+	 * 批量删除区域
+	 */
+	@RequiresPermissions("region-delete")
+	public String deleteBatch() {
+		regionService.deleteBatch(ids);
+		return LIST;
+	}
+	
+	/**
+	 * 修改区域
+	 */
+	@RequiresPermissions("region-edit")
+	public String edit() {
+		regionService.edit(model);
+		return LIST;
+	}
+	
 }

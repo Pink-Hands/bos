@@ -5,4 +5,5 @@ import pers.test.bos.domain.QpWorkbill;
 
 public interface IWorkbillDao extends IBaseDao<QpWorkbill>{
 
+
 }

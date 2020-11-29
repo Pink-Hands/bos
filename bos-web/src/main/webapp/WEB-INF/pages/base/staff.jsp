@@ -212,7 +212,7 @@
 		
 		// 修改取派员窗口
 		$('#editStaffWindow').window({
-	        title: '添加取派员',
+	        title: '修改取派员',
 	        width: 400,
 	        modal: true,
 	        shadow: true,
@@ -346,6 +346,7 @@
 				$("#searchsave").click(function(){
 					var p = $("#searchStaffForm").serializeJson();//将查询表单中的输入内容转化为json
 					$("#grid").datagrid("load", p);//用load方法发送ajax请求提交数据
+					$("#searchStaffForm").get(0).reset();// 重置查询表单
 					$('#searchStaffWindow').window("close");//关闭查询窗口
 				});
 			});
@@ -412,7 +413,6 @@
 					<tr class="title">
 						<td colspan="2">取派员信息</td>
 					</tr>
-					<!-- TODO 这里完善收派员添加 table -->
 					<tr>
 						<td>姓名</td>
 						<td>

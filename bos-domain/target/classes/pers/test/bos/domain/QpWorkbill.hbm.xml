@@ -7,11 +7,11 @@
 			<column length="32" name="id" />
 			<generator class="uuid" />
 		</id>
-		<many-to-one class="pers.test.bos.domain.BcStaff" embed-xml="true" fetch="select" insert="true" name="bcStaff"
+		<many-to-one lazy="false" class="pers.test.bos.domain.BcStaff" embed-xml="true" fetch="select" insert="true" name="bcStaff"
 			not-found="exception" optimistic-lock="true" unique="false" update="true">
 			<column length="32" name="staff_id" />
 		</many-to-one>
-		<many-to-one class="pers.test.bos.domain.QpNoticebill" embed-xml="true" fetch="select" insert="true"
+		<many-to-one lazy="false" class="pers.test.bos.domain.QpNoticebill" embed-xml="true" fetch="select" insert="true"
 			name="qpNoticebill" not-found="exception" optimistic-lock="true" unique="false" update="true">
 			<column length="32" name="noticebill_id" />
 		</many-to-one>

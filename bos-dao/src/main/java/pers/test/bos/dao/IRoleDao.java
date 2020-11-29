@@ -5,4 +5,6 @@ import pers.test.bos.domain.AuthRole;
 
 public interface IRoleDao extends IBaseDao<AuthRole> {
 
+	public void deleteRole(String[] roleIds);
+
 }

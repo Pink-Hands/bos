@@ -22,11 +22,9 @@
 	$(function(){
 		$("body").css({visibility:"visible"});
 		
-		
 		$('#save').click(function(){
 			var v = $('#userForm').form("validate");
 			if (v) {
-				
 				$('#userForm').submit();
 			} else {
 				$.messager("提示","不符合规则","warning");

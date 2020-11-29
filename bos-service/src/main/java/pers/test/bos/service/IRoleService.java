@@ -13,4 +13,10 @@ public interface IRoleService {
 
 	public List<AuthRole> findAll();
 
+	public void deleteBatch(String ids);
+
+	public AuthRole findById(String roleId);
+
+	public void update(AuthRole role, String functionIds);
+
 }

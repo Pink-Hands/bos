@@ -13,4 +13,10 @@ public interface IFunctionDao extends IBaseDao<AuthFunction> {
 
 	public List<AuthFunction> findMenuByUserId(String userId);
 
+	public void edit(AuthFunction function);
+
+	public List<AuthFunction> findAllMenusystem();
+
+	public List<AuthFunction> findMenuByUserIdsystem(String id);
+
 }

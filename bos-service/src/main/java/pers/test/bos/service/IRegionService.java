@@ -15,4 +15,12 @@ public interface IRegionService {
 
 	public List<BcRegion> findListByQ(String q);
 
+	public void save(BcRegion region);
+
+	public void deleteBatch(String ids);
+
+	public void edit(BcRegion region);
+
+	public BcRegion findByShortcode(String shortcode);
+
 }

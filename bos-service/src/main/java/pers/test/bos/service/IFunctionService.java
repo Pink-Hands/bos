@@ -15,4 +15,10 @@ public interface IFunctionService {
 
 	public List<AuthFunction> findMenu();
 
+	public void deleteBatch(String ids);
+
+	public void update(AuthFunction function);
+
+	public List<AuthFunction> findMenusystem();
+
 }

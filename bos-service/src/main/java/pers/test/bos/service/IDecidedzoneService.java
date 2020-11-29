@@ -9,4 +9,8 @@ public interface IDecidedzoneService {
 
 	public void pageQuery(PageBean pageBean);
 
+	public void deleteBatch(String ids);
+
+	public void edit(BcDecidedzone decidedzone, String[] subareaid, String oldId);
+
 }

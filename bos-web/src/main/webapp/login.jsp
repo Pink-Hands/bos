@@ -79,6 +79,18 @@ input[type=password] {
 							<span id="loginform:loginBtn" class="btn btn-login" style="margin-top: -36px;">登录</span>
 						</a>
 					</div>
+					<script type="text/javascript">
+						$(function() {
+							$("#codeInputLine").bind("keydown",function(e){
+						    var theEvent = e || window.event;    
+						    var code = theEvent.keyCode || theEvent.which || theEvent.charCode;    
+						    if (code == 13) { 
+						        //监控回车,回车就提交数据,相当于点击登录
+						    	document.getElementById('loginform').submit();
+						        }    
+							});
+						});
+					</script>
 					<div align="center">
 						<br />
 						<font color="red">

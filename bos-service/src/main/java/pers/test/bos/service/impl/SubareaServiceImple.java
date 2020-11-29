@@ -2,6 +2,7 @@ package pers.test.bos.service.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import pers.test.bos.dao.ISubareaDao;
+import pers.test.bos.domain.BcRegion;
 import pers.test.bos.domain.BcSubarea;
+import pers.test.bos.domain.TUser;
 import pers.test.bos.service.ISubareaService;
 import pers.test.bos.utils.PageBean;
 
@@ -59,6 +62,34 @@ public class SubareaServiceImple implements ISubareaService {
 
 	public List<Object> findSubareaGroupByProvince() {
 		return subareaDao.findSubareaGroupByProvince();
+	}
+
+	/**
+	 * 批量删除分区
+	 */
+	public void deleteBatch(String ids) {
+		if (StringUtils.isNotBlank(ids)) {
+			String[] subareaIds = ids.split(",");// 分割回数组
+			for (String id : subareaIds) {
+				BcSubarea subarea = new BcSubarea(id);
+				subareaDao.delete(subarea);
+			}
+		}
+	}
+
+	/**
+	 * 修改分区
+	 */
+	public void edit(BcSubarea subarea, String oldId) {
+		//subareaDao.saveOrUpdate(subarea);
+		subareaDao.edit(subarea,oldId);
+	}
+
+	
+	public void saveBatch(List<BcSubarea> subareaList) {
+		for (BcSubarea subarea : subareaList) {
+			subareaDao.saveOrUpdate(subarea);
+		}
 	}
 
 }

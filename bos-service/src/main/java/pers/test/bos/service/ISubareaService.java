@@ -19,4 +19,10 @@ public interface ISubareaService {
 
 	public List<Object> findSubareaGroupByProvince();
 
+	public void deleteBatch(String ids);
+
+	public void edit(BcSubarea subarea, String oldId);
+
+	public void saveBatch(List<BcSubarea> subareaList);
+
 }

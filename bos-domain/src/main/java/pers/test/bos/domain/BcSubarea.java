@@ -23,6 +23,9 @@ public class BcSubarea implements java.io.Serializable {
 	public BcSubarea(String id) {
 		this.id = id;
 	}
+	public BcSubarea(BcRegion bcRegion) {
+		this.bcRegion = bcRegion;
+	}
 
 	public BcSubarea(String id, BcDecidedzone bcDecidedzone, BcRegion bcRegion, String addresskey, String startnum,
 			String endnum, Character single, String position) {

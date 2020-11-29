@@ -57,7 +57,7 @@
 				<tr>
 					<td>访问路径</td>
 					<td>
-						<input type="text" name="page" />
+						<input type="text" name="pageaction" />
 					</td>
 				</tr>
 				<tr>
@@ -78,8 +78,6 @@
 				<tr>
 					<td>父功能点</td>
 					<td>
-						<!-- <input name="parentFunction.id" class="easyui-combobox"
-							data-options="valueField:'id',textField:'name',url:'functionAction_listajax.action'" /> -->
 						<input name="parentFunction.id" class="easyui-combotree" data-options="url:'functionAction_listajax.action'"
 							style="width: 170px;" />
 					</td>

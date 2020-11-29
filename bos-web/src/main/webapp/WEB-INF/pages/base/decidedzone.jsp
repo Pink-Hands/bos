@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -19,17 +20,92 @@
 	function doAdd() {
 		$('#addDecidedzoneWindow').window("open");
 	}
+	function onLoadSuccess(data) {
+		$('#editsubareaedGrid').datagrid('selectAll');
+	}
 
 	function doEdit() {
-		alert("修改...");
+		var rows = $('#grid').datagrid("getSelections");
+		if(rows.length == 0 ){
+			//没选中
+		}else{
+			if(rows.length > 1){
+				//选中多于1个
+				$.messager.alert("提示","每次只可选择一个定区进行修改","warning");
+			}else{
+				//只选中1个
+				var editData = rows[0];
+				$("input[name='oldId']").val(editData.id);//传递原id
+				$('#editDecidedzoneWindow').window("open");
+				//load方法回显数据
+				$('#editDecidedzoneForm').form("load",editData);
+				$('#editDecidedzoneForm').form("load",{
+					'bcStaff.id':editData.bcStaff.id//回显取派员
+				});
+				
+				$('#editsubareaedGrid').datagrid({
+					fit : true,
+					striped : true,
+					rownumbers : false,
+					fitColumns : true,
+					singleSelect:false,
+					onLoadSuccess:onLoadSuccess,
+					url : "subareaAction_findListByDecidedzoneId.action?decidedzoneId="+editData.id,
+					columns : [ [ {
+						field : 'subareaid',
+						title : '编号',
+						width : 50,
+						align : 'center',
+						checkbox : true,
+					}, {
+						field : 'addresskey',
+						title : '关键词',
+						width : 120,
+						align : 'center',
+					}, {
+						field : 'position',
+						title : '位置',
+						width : 120,
+						align : 'center',
+					} ] ]
+				
+				});
+			}
+		}
 	}
 
 	function doDelete() {
-		alert("删除...");
+		var rows = $('#grid').datagrid("getSelections");
+		if(rows.length == 0 ){
+			//没选中,提示选择
+			$.messager.alert("提示","请选择需要删除的定区","warning");
+		}else{
+			//选中了,提示确定
+			$.messager.confirm("提示","确认要删除选中的定区吗",function(r){
+			if(r){
+				//确认
+				var array = new Array();//数组
+				for(var i=0;i<rows.length;i++){
+					var staff = rows[i];
+					var id = staff.id;
+					array.push(id);//将id加入数组
+				}
+				var ids = array.join(",");//用,连接数组
+				location.href = "decidedzoneAction_deleteBatch.action?ids="+ids;//手动跳转,将数据发送过去同时刷新页面
+			}else{
+				//取消
+			}
+		})
+		}
 	}
 
 	function doSearch() {
 		$('#searchWindow').window("open");
+	}
+	function doUndo() {
+		$.post('decidedzoneAction_pageQuery.action',function(data){
+			$("#grid").datagrid("load", data);//用load方法发送ajax请求提交数据
+		});
 	}
 	
 	//关联客户
@@ -71,32 +147,57 @@
 	}
 
 	//工具栏
-	var toolbar = [ {
+	var toolbar = [ 
+	<shiro:hasPermission name="decidedzone-search">
+	{
 		id : 'button-search',
 		text : '查询',
 		iconCls : 'icon-search',
 		handler : doSearch
-	}, {
+	},{
+		id : 'button-undo',
+		text : '清除查询条件',
+		iconCls : 'icon-undo',
+		handler : doUndo
+	}, 
+	</shiro:hasPermission>
+	
+	<shiro:hasPermission name="decidedzone-add">
+	{
 		id : 'button-add',
 		text : '增加',
 		iconCls : 'icon-add',
 		handler : doAdd
-	}, {
+	}, 
+	</shiro:hasPermission>
+	
+	<shiro:hasPermission name="decidedzone-edit">
+	{
 		id : 'button-edit',
 		text : '修改',
 		iconCls : 'icon-edit',
 		handler : doEdit
-	}, {
+	}, 
+	</shiro:hasPermission>
+	
+	<shiro:hasPermission name="decidedzone-delete">
+	{
 		id : 'button-delete',
 		text : '删除',
 		iconCls : 'icon-cancel',
 		handler : doDelete
-	}, {
+	}, 
+	</shiro:hasPermission>
+	
+	<shiro:hasPermission name="decidedzone-association">
+	{
 		id : 'button-association',
 		text : '关联客户',
 		iconCls : 'icon-sum',
 		handler : doAssociations
-	} ];
+	} 
+	</shiro:hasPermission>
+	];
 	// 定义列
 	var columns = [ [ {
 		field : 'id',
@@ -156,14 +257,24 @@
 			onDblClickRow : doDblClickRow
 		});
 
-		// 添加、修改定区
+		// 添加定区
 		$('#addDecidedzoneWindow').window({
-			title : '添加修改定区',
+			title : '添加定区',
 			width : 600,
 			modal : true,
 			shadow : true,
 			closed : true,
 			height : 400,
+			resizable : false
+		});
+		// 修改定区
+		$('#editDecidedzoneWindow').window({
+			title : '修改定区',
+			width : 600,
+			modal : true,
+			shadow : true,
+			closed : true,
+			height : 700,
 			resizable : false
 		});
 
@@ -177,8 +288,32 @@
 			height : 400,
 			resizable : false
 		});
+		
+		//工具方法,将表单的输入数据转化为json格式
+		$.fn.serializeJson = function() {
+			var serializeObj = {};
+			var array = this.serializeArray();
+			$(array).each(
+					function() {
+						if (serializeObj[this.name]) {
+							if ($.isArray(serializeObj[this.name])) {
+								serializeObj[this.name].push(this.value);
+							} else {
+								serializeObj[this.name] = [
+										serializeObj[this.name], this.value ];
+							}
+						} else {
+							serializeObj[this.name] = this.value;
+						}
+					});
+			return serializeObj;
+		};
+		
 		$("#btn").click(function() {
-			alert("执行查询...");
+			var p = $("#searchForm").serializeJson();//将查询表单中的输入内容转化为json
+			$("#grid").datagrid("load", p);//用load方法发送ajax请求提交数据
+			$("#searchForm").get(0).reset();// 重置查询表单
+			$('#searchWindow').window("close");//关闭查询窗口
 		});
 
 	});
@@ -201,7 +336,11 @@
 				width : 120,
 				align : 'center',
 				formatter : function(data, row, index) {
-					return row.bcRegion.province;
+					if(row.bcRegion == null){
+						return "空";
+					}else{
+						return row.bcRegion.province;
+					} 
 				}
 			}, {
 				field : 'city',
@@ -209,7 +348,11 @@
 				width : 120,
 				align : 'center',
 				formatter : function(data, row, index) {
-					return row.bcRegion.city;
+					if(row.bcRegion == null){
+						return "空";
+					}else{
+						return row.bcRegion.city;
+					} 
 				}
 			}, {
 				field : 'district',
@@ -217,7 +360,11 @@
 				width : 120,
 				align : 'center',
 				formatter : function(data, row, index) {
-					return row.bcRegion.district;
+					if(row.bcRegion == null){
+						return "空";
+					}else{
+						return row.bcRegion.district;
+					} 
 				}
 			}, {
 				field : 'addresskey',
@@ -257,17 +404,17 @@
 				field : 'id',
 				title : '客户编号',
 				width : 120,
-				align : 'center'
+				align : 'center',
 			}, {
 				field : 'name',
 				title : '客户名称',
 				width : 120,
-				align : 'center'
+				align : 'center',
 			}, {
 				field : 'station',
 				title : '所属单位',
 				width : 120,
-				align : 'center'
+				align : 'center',
 			} ] ]
 		});
 	}
@@ -288,8 +435,8 @@
 		</div>
 	</div>
 
-	<!-- 添加 修改分区 -->
-	<div class="easyui-window" title="定区添加修改" id="addDecidedzoneWindow" collapsible="false" minimizable="false"
+	<!-- 添加定区 -->
+	<div class="easyui-window" title="定区添加" id="addDecidedzoneWindow" collapsible="false" minimizable="false"
 		maximizable="false" style="top: 20px; left: 200px">
 		<div style="height: 31px; overflow: hidden;" split="false" border="false">
 			<div class="datagrid-toolbar">
@@ -340,7 +487,7 @@
 						<td valign="top">关联分区</td>
 						<td>
 							<table id="subareaGrid" class="easyui-datagrid" border="false" style="width: 300px; height: 300px"
-								data-options="url:'subareaAction_listajax.action',fitColumns:true,singleSelect:false">
+								data-options="url:'subareaAction_listajax.action',fitColumns:true">
 								<thead>
 									<tr>
 										<th data-options="field:'subareaid',width:30,checkbox:true">编号</th>
@@ -355,14 +502,36 @@
 			</form>
 		</div>
 	</div>
-	<!-- 查询定区 -->
-	<div class="easyui-window" title="查询定区窗口" id="searchWindow" collapsible="false" minimizable="false" maximizable="false"
-		style="top: 20px; left: 200px">
+	
+	<!-- 修改定区 -->
+	<div class="easyui-window" title="定区修改" id="editDecidedzoneWindow" collapsible="false" minimizable="false"
+		maximizable="false" style="top: 20px; left: 200px">
+		<div style="height: 31px; overflow: hidden;" split="false" border="false">
+			<div class="datagrid-toolbar">
+				<a id="editsave" icon="icon-edit" href="#" class="easyui-linkbutton" plain="true">修改</a>
+				<script type="text/javascript">
+					$(function() {
+						$("#editsave").click(function() {
+							var v = $("#editDecidedzoneForm").form("validate");
+							if(v){
+								//表单正确
+								$("#editDecidedzoneForm").submit();
+							}else{
+								//表单有误
+								$.messager.alert("提示","内容不合规范！","error");
+							}
+						});
+					});
+				</script>
+			</div>
+		</div>
+
 		<div style="overflow: auto; padding: 5px;" border="false">
-			<form>
+			<form id="editDecidedzoneForm" method="post" action="decidedzoneAction_edit.action">
+				<input type="hidden" name="oldId">
 				<table class="table-edit" width="80%" align="center">
 					<tr class="title">
-						<td colspan="2">查询条件</td>
+						<td colspan="2">定区信息</td>
 					</tr>
 					<tr>
 						<td>定区编码</td>
@@ -371,9 +540,65 @@
 						</td>
 					</tr>
 					<tr>
+						<td>定区名称</td>
+						<td>
+							<input type="text" name="name" class="easyui-validatebox" required="true" />
+						</td>
+					</tr>
+					<tr>
+						<td>选择取派员</td>
+						<td>
+							<input class="easyui-combobox" name="bcStaff.id"
+								data-options="valueField:'id',textField:'name',url:'staffAction_listajax.action'" />
+						</td>
+					</tr>
+					<tr height="250">
+						<td valign="top">关联分区</td>
+						<td>
+							<table id="editsubareaGrid" class="easyui-datagrid" border="false" style="width: 300px; height: 250px"
+								data-options="url:'subareaAction_listajax.action',fitColumns:true,singleSelect:false">
+								<thead>
+									<tr>
+										<th data-options="field:'subareaid',width:30,checkbox:true">编号</th>
+										<th data-options="field:'addresskey',width:150">关键字</th>
+										<th data-options="field:'position',width:200,align:'right'">位置</th>
+									</tr>
+								</thead>
+							</table>
+						</td>
+					</tr>
+					<tr height="200">
+						<td valign="top">已关联分区</td>
+						<td>
+							<table id="editsubareaedGrid" class="easyui-datagrid" border="false" style="width:300px; height: 200px"
+								data-options="singleSelect:false">
+							</table>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+	
+	<!-- 查询定区 -->
+	<div class="easyui-window" title="查询定区窗口" id="searchWindow" collapsible="false" minimizable="false" maximizable="false"
+		style="top: 20px; left: 200px">
+		<div style="overflow: auto; padding: 5px;" border="false">
+			<form id="searchForm">
+				<table class="table-edit" width="80%" align="center">
+					<tr class="title">
+						<td colspan="2">查询条件</td>
+					</tr>
+					<tr>
+						<td>定区编码</td>
+						<td>
+							<input type="text" name="id" class="easyui-validatebox"/>
+						</td>
+					</tr>
+					<tr>
 						<td>所属单位</td>
 						<td>
-							<input type="text" name="staff.station" class="easyui-validatebox" required="true" />
+							<input type="text" name="bcStaff.station" class="easyui-validatebox"/>
 						</td>
 					</tr>
 					<tr>

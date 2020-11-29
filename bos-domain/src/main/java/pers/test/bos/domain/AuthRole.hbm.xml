@@ -19,11 +19,11 @@
             <key on-delete="noaction">
                 <column length="32" name="role_id" not-null="true"/>
             </key>
-            <many-to-many embed-xml="true" entity-name="pers.test.bos.domain.AuthFunction" not-found="exception" unique="false">
+            <many-to-many lazy="false" embed-xml="true" entity-name="pers.test.bos.domain.AuthFunction" not-found="exception" unique="false">
                 <column length="32" name="function_id" not-null="true"/>
             </many-to-many>
         </set>
-        <set embed-xml="true" fetch="select" inverse="false" lazy="true" mutable="true" name="TUsers" optimistic-lock="true" sort="unsorted" table="user_role">
+        <set embed-xml="true" fetch="select" inverse="true" lazy="true" mutable="true" name="TUsers" optimistic-lock="true" sort="unsorted" table="user_role">
             <key on-delete="noaction">
                 <column length="32" name="role_id" not-null="true"/>
             </key>

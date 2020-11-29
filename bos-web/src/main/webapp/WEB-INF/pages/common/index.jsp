@@ -47,7 +47,12 @@
 			type : 'POST',
 			dataType : 'text',
 			success : function(data) {
-				var zNodes = eval("(" + data + ")");
+				var datajson = JSON.parse(data);//将data字符串转JSON
+				for(var i=0;i<datajson.length;i++){
+					datajson[i].page = datajson[i].pageaction;//加入page=pageaction
+				}
+				data = JSON.stringify(datajson);//转回字符串
+				var zNodes = eval("(" + data + ")");//构建树形
 				$.fn.zTree.init($("#treeMenu"), setting, zNodes);
 			},
 			error : function(msg) {
@@ -57,11 +62,17 @@
 		
 		// 系统管理菜单加载
 		$.ajax({
-			url : '${pageContext.request.contextPath}/json/admin.json',
+			url : '${pageContext.request.contextPath}/functionAction_findMenusystem.action',
 			type : 'POST',
 			dataType : 'text',
 			success : function(data) {
-				var zNodes = eval("(" + data + ")");
+				var datajson = JSON.parse(data);//将data字符串转JSON
+				for(var i=0;i<datajson.length;i++){
+					datajson[i].page = datajson[i].pageaction;//加入page=pageaction
+				}
+				console.info(datajson);
+				data = JSON.stringify(datajson);//转回字符串
+				var zNodes = eval("(" + data + ")");//构建树形
 				$.fn.zTree.init($("#adminMenu"), setting, zNodes);
 			},
 			error : function(msg) {

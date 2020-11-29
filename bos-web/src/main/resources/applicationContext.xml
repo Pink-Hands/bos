@@ -83,10 +83,22 @@
 				/login.jsp = anon
 				/userAction_login.action = anon
 				/page_base_staff.action = perms["staff"]
+				/page_admin_userlist.action = perms["user"]
+				/page_admin_function.action = perms["function"]
+				/page_admin_role.action = perms["role"]
 				/staffAction_add.action = perms["staff-add"]
 				/staffAction_deleteBatch.action = perms["staff-delete"]
 				/staffAction_restoreBatch.action = perms["staff-restore"]
 				/staffAction_edit.action = perms["staff-edit"]
+				/userAction_add.action = perms["user-add"]
+				/userAction_deleteBatch.action = perms["user-delete"]
+				/userAction_edit.action = perms["user-edit"]
+				/functionAction_add.action = perms["function-add"]
+				/functionAction_deleteBatch.action = perms["function-delete"]
+				/functionAction_edit.action = perms["function-edit"]
+				/roleAction_add.action = perms["role-add"]
+				/roleAction_deleteBatch.action = perms["role-delete"]
+				/roleAction_edit.action = perms["role-edit"]
 				/* = authc
 			</value>
 		</property>

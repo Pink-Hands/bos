@@ -20,4 +20,14 @@ public class RegionDaoImpl extends BaseDaoImpl<BcRegion> implements IRegionDao {
 		return list;
 	}
 
+	public BcRegion findByShortcode(String shortcode) {
+		String hql = "select r from BcRegion r where r.shortcode = ?";
+		List<?> find = this.getHibernateTemplate().find(hql, shortcode);
+		if(find.size()==0) {
+			return null;
+		}else {
+			return (BcRegion) find.get(0);
+		}
+	}
+
 }

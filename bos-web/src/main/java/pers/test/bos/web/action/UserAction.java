@@ -15,6 +15,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 
 import pers.test.bos.dao.base.impl.UserDaoImpl;
@@ -101,6 +102,7 @@ public class UserAction extends BaseAction<TUser> {
 	/**
 	 * 保存用户
 	 */
+	@RequiresPermissions("user-add")
 	public String add() {
 		userService.save(model, roleIds);
 		return LIST;
@@ -115,6 +117,7 @@ public class UserAction extends BaseAction<TUser> {
 	/**
 	 * 分页查询
 	 */
+	@RequiresPermissions("user")
 	public String pageQuery() {
 		DetachedCriteria dc = pageBean.getDetachedCriteria();// 获取分页查询中的查询条件
 		String username = model.getUsername();// 获取传递来的查询参数
@@ -122,12 +125,16 @@ public class UserAction extends BaseAction<TUser> {
 		String station = model.getStation();
 		String gender = model.getGender();
 		Double salary = model.getSalary();
+		String remark = model.getRemark();
 
 		if (StringUtils.isNotBlank(username)) {
 			dc.add(Restrictions.like("username", "%" + username + "%"));// 如果参数存在则进行模糊查询
 		}
 		if (StringUtils.isNotBlank(telephone)) {
 			dc.add(Restrictions.like("telephone", "%" + telephone + "%"));
+		}
+		if (StringUtils.isNotBlank(remark)) {
+			dc.add(Restrictions.like("remark", "%" + remark + "%"));
 		}
 		if (StringUtils.isNotBlank(station)) {
 			dc.add(Restrictions.like("station", "%" + station + "%"));
@@ -145,8 +152,8 @@ public class UserAction extends BaseAction<TUser> {
 			userService.pageQuery(pageBean);
 
 		}
-		userService.pageQuery(pageBean);
 
+		userService.pageQuery(pageBean);
 		this.java2Json(pageBean, new String[] { "qpNoticebills", "authRoles", "birthday" });
 		return NONE;
 	}
@@ -160,6 +167,7 @@ public class UserAction extends BaseAction<TUser> {
 	/**
 	 * 删除用户
 	 */
+	@RequiresPermissions("user-delete")
 	public String deleteBatch() {
 		userService.deleteBatch(Ids);
 		return LIST;
@@ -189,6 +197,7 @@ public class UserAction extends BaseAction<TUser> {
 	/**
 	 * 修改用户
 	 */
+	@RequiresPermissions("user-edit")
 	public String edit() {
 		userService.update(model, roleIds, birthdayString);
 		return LIST;
@@ -205,7 +214,7 @@ public class UserAction extends BaseAction<TUser> {
 			allNames += name + ",";
 		}
 		int length = allNames.length();
-		allNames = allNames.substring(0, length - 1);//去除最后的,
+		allNames = allNames.substring(0, length - 1);// 去除最后的,
 		ServletActionContext.getResponse().setContentType("text/plain;charset=utf-8");// 设置输出为文本
 		try {
 			ServletActionContext.getResponse().getWriter().print(allNames);// 将从数据库查询到的数据输回

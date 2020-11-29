@@ -1,4 +1,3 @@
-
 package pers.test.crm;
 
 import java.util.List;
@@ -19,6 +18,7 @@ import javax.xml.ws.ResponseWrapper;
  */
 @WebService(name = "ICustomerService", targetNamespace = "http://service.crm.test.pers/")
 @XmlSeeAlso({
+
 })
 public interface ICustomerService {
 
@@ -34,6 +34,31 @@ public interface ICustomerService {
     @RequestWrapper(localName = "findCustomerByTelephone", targetNamespace = "http://service.crm.test.pers/", className = "pers.test.crm.service.FindCustomerByTelephone")
     @ResponseWrapper(localName = "findCustomerByTelephoneResponse", targetNamespace = "http://service.crm.test.pers/", className = "pers.test.crm.service.FindCustomerByTelephoneResponse")
     public Customer findCustomerByTelephone(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0);
+
+    /**
+     * 
+     * @param arg1
+     * @param arg0
+     */
+    @WebMethod
+    @RequestWrapper(localName = "updatedecidedzone", targetNamespace = "http://service.crm.test.pers/", className = "pers.test.crm.service.Updatedecidedzone")
+    @ResponseWrapper(localName = "updatedecidedzoneResponse", targetNamespace = "http://service.crm.test.pers/", className = "pers.test.crm.service.UpdatedecidedzoneResponse")
+    public void updatedecidedzone(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0,
+        @WebParam(name = "arg1", targetNamespace = "")
+        String arg1);
+
+    /**
+     * 
+     * @param arg0
+     */
+    @WebMethod
+    @RequestWrapper(localName = "assigncustomersuntodecidedzone", targetNamespace = "http://service.crm.test.pers/", className = "pers.test.crm.service.Assigncustomersuntodecidedzone")
+    @ResponseWrapper(localName = "assigncustomersuntodecidedzoneResponse", targetNamespace = "http://service.crm.test.pers/", className = "pers.test.crm.service.AssigncustomersuntodecidedzoneResponse")
+    public void assigncustomersuntodecidedzone(
         @WebParam(name = "arg0", targetNamespace = "")
         String arg0);
 

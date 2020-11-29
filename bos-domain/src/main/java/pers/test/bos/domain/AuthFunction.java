@@ -15,11 +15,11 @@ public class AuthFunction implements java.io.Serializable {
 	private String text;//text == name
 	private String code;//关键字
 	private String description;
-	private String page;
+	private String pageaction;
 	private String generatemenu;//是否生成菜单,1是0否
 	private Integer zindex;
-	private Set children = new HashSet(0);//对应的多个角色
-	private Set roles = new HashSet(0);//对应的下级权限
+	private Set children = new HashSet(0);//对应的下级权限
+	private Set roles = new HashSet(0);//对应的角色
 
 	public String getpId() {
 		if(parentFunction == null) {
@@ -36,14 +36,14 @@ public class AuthFunction implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public AuthFunction(String id, AuthFunction authFunction, String name, String code, String description, String page,
+	public AuthFunction(String id, AuthFunction authFunction, String name, String code, String description, String pageaction,
 			String generatemenu, Integer zindex, Set children, Set roles) {
 		this.id = id;
 		this.parentFunction = authFunction;
 		this.name = name;
 		this.code = code;
 		this.description = description;
-		this.page = page;
+		this.pageaction = pageaction;
 		this.generatemenu = generatemenu;
 		this.zindex = zindex;
 		this.children = children;
@@ -91,12 +91,12 @@ public class AuthFunction implements java.io.Serializable {
 		this.description = description;
 	}
 
-	public String getPage() {
-		return page;
+	public String getPageaction() {
+		return pageaction;
 	}
 
-	public void setPage(String page) {
-		this.page = page;
+	public void setPageaction(String pageaction) {
+		this.pageaction = pageaction;
 	}
 
 	public String getGeneratemenu() {

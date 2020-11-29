@@ -1,6 +1,7 @@
 package pers.test.bos.domain;
 // Generated 2020-11-8 16:07:48 by Hibernate Tools 5.3.0.Beta2
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -11,8 +12,8 @@ public class QpWorkbill implements java.io.Serializable {
 	private String id;
 	private BcStaff bcStaff;
 	private QpNoticebill qpNoticebill;
-	private String type;//工单类型：新、追、改、销
-	private String pickstate;//取件状态：未取件、取件中、已取件
+	private String type;// 工单类型：新、追、改、销
+	private String pickstate;// 取件状态：未取件、取件中、已取件
 	private Date buildtime;
 	private Integer attachbilltimes;
 	private String remark;
@@ -21,18 +22,25 @@ public class QpWorkbill implements java.io.Serializable {
 	public static final String TYPE_2 = "追单";
 	public static final String TYPE_3 = "改单";
 	public static final String TYPE_4 = "销单";
-	
+
 	public static final String PICKSTATE_NO = "未取件";
 	public static final String PICKSTATE_RUNNING = "取件中";
 	public static final String PICKSTATE_YES = "已取件";
-	
-	
+
 	public QpWorkbill() {
+	}
+
+	public QpWorkbill(String id) {
+		this.id = id;
 	}
 
 	public QpWorkbill(String id, Date buildtime) {
 		this.id = id;
 		this.buildtime = buildtime;
+	}
+
+	public QpWorkbill(BcStaff bcStaff) {
+		this.bcStaff = bcStaff;
 	}
 
 	public QpWorkbill(String id, BcStaff bcStaff, QpNoticebill qpNoticebill, String type, String pickstate,
@@ -45,6 +53,15 @@ public class QpWorkbill implements java.io.Serializable {
 		this.buildtime = buildtime;
 		this.attachbilltimes = attachbilltimes;
 		this.remark = remark;
+	}
+
+	public String getBuildtimeString() {
+		if (buildtime != null) {
+			String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(buildtime);
+			return format;
+		} else {
+			return "";
+		}
 	}
 
 	public String getId() {

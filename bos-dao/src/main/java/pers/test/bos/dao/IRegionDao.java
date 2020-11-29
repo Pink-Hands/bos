@@ -8,5 +8,7 @@ import pers.test.bos.domain.BcRegion;
 public interface IRegionDao extends IBaseDao<BcRegion> {
 
 	public List<BcRegion> findListByQ(String q);
+
+	public BcRegion findByShortcode(String shortcode);
 	
 }

@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -18,27 +19,41 @@
 
 <script type="text/javascript">
 	// 工具栏
-	var toolbar = [ {
+	var toolbar = [ 
+	<shiro:hasPermission name="user-search">
+	{
 		id : 'button-search',	
 		text : '查询',
 		iconCls : 'icon-search',
 		handler : doView
-	}, {
-		id : 'button-delete',
+	},
+	{
+		id : 'button-undo',
 		text : '清除查询条件',
 		iconCls : 'icon-undo',
 		handler : doUndo
-	}, {
+	}, 
+	</shiro:hasPermission>
+	
+	<shiro:hasPermission name="user-add">
+	{
 		id : 'button-add',
 		text : '新增',
 		iconCls : 'icon-add',
 		handler : doAdd
-	}, {
+	}, 
+	</shiro:hasPermission>
+	
+	<shiro:hasPermission name="user-delete">
+	{
 		id : 'button-delete',
 		text : '删除',
 		iconCls : 'icon-cancel',
 		handler : doDelete
-	}];
+	}
+	</shiro:hasPermission>
+	
+	];
 	//定义冻结列
 	var frozenColumns = [ [ {
 		field : 'id',
@@ -79,10 +94,15 @@
 		title : '对应角色',
 		width : 500,
 		rowspan : 2
+	}, {
+		field : 'remark',
+		title : '备注',
+		width : 400,
+		rowspan : 2
 	} ], [ {
 		field : 'station',
 		title : '单位',
-		width : 100,
+		width : 80,
 		align : 'center'
 	}, {
 		field : 'salary',
@@ -123,10 +143,11 @@
 	    });
 		
 	});
-	// 双击
+	// 修改
 	function doDblClickRow(rowIndex, rowData) {
+		<shiro:hasPermission name="user-edit">
 		location.href="${pageContext.request.contextPath}/page_admin_useredit.action?id="+rowData.id;
-		console.info();
+		</shiro:hasPermission>
 	}
 	
 	//新增
@@ -212,6 +233,7 @@
 				$("#searchsave").click(function(){
 					var p = $("#searchUserForm").serializeJson();//将查询表单中的输入内容转化为json
 					$("#grid").datagrid("load", p);//用load方法发送ajax请求提交数据
+					$("#searchUserForm").get(0).reset();// 重置查询表单
 					$('#searchUserWindow').window("close");//关闭查询窗口
 				});
 			});
@@ -259,6 +281,12 @@
 							<input type="text" name="roleNames" class="easyui-validatebox" />
 						</td>
 						<td>只可查询一个</td>
+					</tr>
+					<tr>
+						<td>备注</td>
+						<td>
+							<input type="text" name="remark" class="easyui-validatebox" />
+						</td>
 					</tr>
 				</table>
 			</form>
