@@ -73,11 +73,12 @@
 		
 		<!-- 工单管理 -->
 		<action name="workbillAction_*" class="workbillAction" method="{1}">
-			<result name="list">/WEB-INF/pages/qupai/noticebill.jsp</result>
+			<result name="list">/WEB-INF/pages/qupai/workbill.jsp</result>
 		</action>
 		
 		<!-- 工作单管理 -->
 		<action name="workordermanageAction_*" class="workordermanageAction" method="{1}">
+			<result name="list">/WEB-INF/pages/qupai/workorderimport.jsp</result>
 		</action>
 		
 		<!-- 权限管理 -->

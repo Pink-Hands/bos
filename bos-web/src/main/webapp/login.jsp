@@ -46,12 +46,9 @@ input[type=password] {
 </script>
 </head>
 <body>
-	<div style="width: 900px; height: 50px; position: absolute; text-align: left; left: 50%; top: 50%; margin-left: -450px;; margin-top: -280px;">
-		<span style="float: right; margin-top: 35px; color: #488ED5;">新BOS系统，致力于便捷、安全、稳定等方面的客户体验</span>
-	</div>
 	<div class="main-inner" id="mainCnt"
-		style="width: 900px; height: 440px; overflow: hidden; position: absolute; left: 50%; top: 50%; margin-left: -450px; margin-top: -220px; background-image: url('${pageContext.request.contextPath }/images/bg_login.jpg')">
-		<div id="loginBlock" class="login" style="margin-top: 80px; height: 255px;">
+		style="width: 100%; height: 100%; overflow: hidden; position: absolute;  background-image: url('${pageContext.request.contextPath }/images/bg_login3.jpg')">
+		<div id="loginBlock" class="login" style="margin-left: 780px; margin-top: 320px; height: 255px;">
 			<div class="loginFunc">
 				<div id="lbNormal" class="loginFuncMobile">员工登录</div>
 			</div>
@@ -68,7 +65,8 @@ input[type=password] {
 						<label for="pwdInput" class="placeholder" id="pwdPlaceholder">密码：</label>
 					</div>
 					<div class="loginFormIpt loginFormIptWiotTh" style="margin-top: 58px;">
-						<div id="codeInputLine" class="loginFormIpt showPlaceholder" style="margin-left: 0px; margin-top: -40px; width: 50px;">
+						<div id="codeInputLine" class="loginFormIpt showPlaceholder"
+							style="margin-left: 0px; margin-top: -40px; width: 50px;">
 							<input id="loginform:codeInput" class="loginFormTdIpt" type="text" name="checkcode" title="请输入验证码" />
 							<!-- 调用validatecode.jsp生成验证码图片,后面的Math.random()为了防止浏览器缓存而没重新请求 -->
 							<img id="loginform:vCode" src="${pageContext.request.contextPath }/validatecode.jsp"
@@ -81,32 +79,34 @@ input[type=password] {
 					</div>
 					<script type="text/javascript">
 						$(function() {
-							$("#codeInputLine").bind("keydown",function(e){
-						    var theEvent = e || window.event;    
-						    var code = theEvent.keyCode || theEvent.which || theEvent.charCode;    
-						    if (code == 13) { 
-						        //监控回车,回车就提交数据,相当于点击登录
-						    	document.getElementById('loginform').submit();
-						        }    
-							});
+							$("#codeInputLine")
+									.bind(
+											"keydown",
+											function(e) {
+												var theEvent = e
+														|| window.event;
+												var code = theEvent.keyCode
+														|| theEvent.which
+														|| theEvent.charCode;
+												if (code == 13) {
+													//监控回车,回车就提交数据,相当于点击登录
+													document.getElementById(
+															'loginform')
+															.submit();
+												}
+											});
 						});
 					</script>
 					<div align="center">
 						<br />
 						<font color="red">
-							<s:actionerror/>
+							<s:actionerror />
 						</font>
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
-	<div style="width: 900px; height: 50px; position: absolute; text-align: left; left: 50%; top: 50%; margin-left: -450px;; margin-top: 220px;">
-		<span style="color: #488ED5;">Powered By www.itcast.cn</span>
-		<span style="color: #488ED5; margin-left: 10px;">
-			推荐浏览器（右键链接-目标另存为）：
-			<a href="http://download.firefox.com.cn/releases/full/23.0/zh-CN/Firefox-full-latest.exe">Firefox</a>
-		</span>
-	</div>
+
 </body>
 </html>

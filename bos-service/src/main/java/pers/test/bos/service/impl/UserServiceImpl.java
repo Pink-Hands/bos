@@ -26,7 +26,6 @@ public class UserServiceImpl implements IUserService {
 	public TUser login(TUser user) {
 		// 用MD5进行加密
 		String password = MD5Utils.md5(user.getPassword());
-
 		return userDao.findUserByUsernameAndPassword(user.getUsername(), password);
 	}
 
@@ -54,7 +53,6 @@ public class UserServiceImpl implements IUserService {
 
 	public void pageQuery(PageBean pageBean) {
 		userDao.pageQuery(pageBean);
-		;
 	}
 
 	/**

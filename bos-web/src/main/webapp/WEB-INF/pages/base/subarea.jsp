@@ -296,7 +296,7 @@
 		//导入按钮
 		$("#button-import").upload({
 			action:'subareaAction_importXls.action',
-			name:'subareaFile'
+			name:'subareaFile',
 		});
 	});
 	

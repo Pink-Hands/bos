@@ -14,7 +14,6 @@ import com.opensymphony.xwork2.ModelDriven;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
-import pers.test.bos.domain.BcRegion;
 import pers.test.bos.utils.PageBean;
 
 /**

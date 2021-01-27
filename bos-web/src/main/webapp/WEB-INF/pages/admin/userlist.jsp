@@ -130,7 +130,6 @@
 			onDblClickRow : doDblClickRow
 		});
 		
-		
 		//查询用户的窗口
 		$('#searchUserWindow').window({
 	        title: '查询用户',
