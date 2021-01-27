@@ -9,13 +9,13 @@ import java.util.Date;
 public class QpWorkordermanage implements java.io.Serializable {
 
 	private String id;
-	private String arrivecity;
+	private String arrivecity;//到达地
 	private String product;
 	private Integer num;
 	private Double weight;
-	private String floadreqr;
-	private String prodtimelimit;
-	private String prodtype;
+	private String floadreqr;//配载要求
+	private String prodtimelimit;//产品时限
+	private String prodtype;//产品类型
 	private String sendername;
 	private String senderphone;
 	private String senderaddr;
@@ -23,8 +23,8 @@ public class QpWorkordermanage implements java.io.Serializable {
 	private String receiverphone;
 	private String receiveraddr;
 	private Integer feeitemnum;//计费件数
-	private Double actlweit;
-	private String vol;
+	private Double actlweit;//实际重量
+	private String vol;//体积
 	private String managerCheck;
 	private Date updatetime;
 

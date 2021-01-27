@@ -1,6 +1,8 @@
 package pers.test.bos.dao.base.impl;
 import java.util.List;
 
+import javax.mail.Session;
+
 import org.springframework.stereotype.Repository;
 import pers.test.bos.dao.IUserDao;
 import pers.test.bos.domain.TUser;
